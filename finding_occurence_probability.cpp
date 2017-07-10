@@ -9,17 +9,19 @@ int poly2[]={0,0,0,1,0,0,0,0,1}; // feedback polynomial of degree 9
 int poly3[]={0,1,0,0,0,0,0,0,0,0,1};  // feedback polynomial of degree 11
 int poly4[]={1,0,1,1,0,0,0,0,0,0,0,0,1};  // feedback polynomial of degree 13
 int *arr1,*arr2,*arr3,*arr4;
+
 int LFSR(int length,int* &arr,int poly[])
 {
            int i,fb;
            fb=0;
            for(i=0;i<length;i++)
            fb^=(poly[i]*arr[length-i-1]);
-	for(i=0;i<length-1;i++)
-	arr[i]=arr[i+1];
-	arr[length-1]=fb;
-	return (arr[0]);
+	   for(i=0;i<length-1;i++)
+	   arr[i]=arr[i+1];
+	   arr[length-1]=fb;
+	   return (arr[0]);
 }
+
 int main()
 {
 	FILE *ifp,*ofp,*ofp1,*ofp2,*ofp3,*ofp4;
@@ -29,6 +31,7 @@ int main()
 	int cnt1=0,cnt2=0,cnt3=0,cnt4=0;
 	
 /**************OPENING THE DATA FILES*****************/
+	
 	ifp=fopen("inp.txt","r");
 	if(ifp==NULL)
 	{
@@ -104,39 +107,49 @@ int main()
 	}
 	fscanf(ifp,"%d",&no_clk);
 	
-	/******************************CLOCKING THE LFSRs*******************/
+/******************************CLOCKING THE LFSRs*******************/
+	
 	int period1=0,period2=0,period3=0,period4=0;
 	for(k=0;k<no_clk;k++)
 	{
 		x1=LFSR(l1,arr1,poly1);
 		fprintf(ofp1,"%d",x1);
+		
 		x2=LFSR(l2,arr2,poly2);
 		fprintf(ofp2,"%d",x2);
-	           x3=LFSR(l3,arr3,poly3);
+	        
+		x3=LFSR(l3,arr3,poly3);
 		fprintf(ofp3,"%d",x3);
+		
 		x4=LFSR(l4,arr4,poly4);
 		fprintf(ofp4,"%d",x4);
+		
 		f=1^(x1*x2*x3)^(x1*x3)^(x1*x4)^(x3*x4)^(x1)^(x4)^(x2)^(x3);
 		fprintf(ofp,"%d",f);
+		
 		if(f==x1) cnt1++;
 		if(f==x2) cnt2++;
 		if(f==x3) cnt3++;
 		if(f==x4) cnt4++;
+		
 		for(j=0;j<l1;j++)
 		if(arr1[j]!=init_st1[j])
 		break;
 		if(j==l1 && period1==0)
 		period1=k+1;
+		
 		for(j=0;j<l2;j++)
 		if(arr2[j]!=init_st2[j])
 		break;
 		if(j==l2 && period2==0)
 		period2=k+1;
+		
 		for(j=0;j<l3;j++)
 		if(arr3[j]!=init_st3[j])
 		break;
 		if(j==l3 && period3==0)
 		period3=k+1;
+		
 		for(j=0;j<l4;j++)
 		if(arr4[j]!=init_st4[j])
 		break;
